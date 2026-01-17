@@ -4,6 +4,7 @@ import { X, Check, Camera, Star, Leaf, Recycle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Confetti, SuccessPulse } from "@/components/common/Confetti";
 import { usePantry } from "@/hooks/usePantry";
+import { useUser } from "@/hooks/useUser";
 import recipeImage from "@/assets/recipe-avocado-chicken.png";
 
 const CookingComplete = () => {
@@ -25,6 +26,7 @@ const CookingComplete = () => {
   };
 
   const { removeItem, items: pantryItems } = usePantry();
+  const { addImpact } = useUser();
 
   // Mock ingredients used in this recipe (In a real app, this would be passed via navigation state)
   // For now, we'll try to find and remove "Chicken", "Lime", and "Avocado" if they exist
@@ -32,6 +34,17 @@ const CookingComplete = () => {
 
   const handleDone = () => {
     setIsSubmitting(true);
+
+    // Track impact for this cooking session
+    // These are estimated values for the Avocado & Lime Chicken recipe
+    addImpact({
+      money: 8.50,      // Estimated savings from using ingredients before expiry
+      co2: 2.5,         // Estimated CO2 saved (kg)
+      foodWeight: 0.8,  // Estimated food weight rescued (kg)
+      recipeName: "Avocado & Lime Chicken",
+      recipeId: "avocado-lime-chicken-" + Date.now(),
+      image: uploadedImage || undefined
+    });
 
     // Deduct items from pantry
     ingredientsUsed.forEach(ingredientName => {
@@ -41,7 +54,7 @@ const CookingComplete = () => {
       }
     });
 
-    // Simulate API delay
+    // Navigate to inventory updated screen
     setTimeout(() => {
       navigate("/inventory-updated", { state: { itemsRemoved: ingredientsUsed } });
     }, 500);

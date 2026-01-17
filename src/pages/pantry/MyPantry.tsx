@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, Settings, Sparkles, Plus, MoreHorizontal, Calendar, ShoppingCart, Refrigerator, Check } from "lucide-react";
+import { Search, Settings, Plus, MoreHorizontal, Calendar, ShoppingCart, Refrigerator, Check } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
@@ -113,12 +113,6 @@ const MyPantry = () => {
               className="pl-12 h-12 rounded-xl bg-card border-border"
             />
           </div>
-          <button
-            onClick={() => navigate("/pantry-scan")}
-            className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center hover:bg-primary-hover transition-colors"
-          >
-            <Sparkles className="w-5 h-5 text-primary-foreground" />
-          </button>
         </div>
 
         {/* Categories */}
@@ -283,9 +277,9 @@ const MyPantry = () => {
         </button>
       </div>
 
-      {/* Floating Add Button - navigates to pantry scan for adding new items */}
+      {/* Floating Add Button */}
       <button
-        onClick={() => navigate("/pantry-scan")}
+        onClick={() => toast({ title: "Add item feature coming soon" })}
         className="fixed bottom-24 right-4 w-14 h-14 bg-primary rounded-full flex items-center justify-center shadow-lg hover:bg-primary-hover hover:scale-105 active:scale-95 transition-all"
         aria-label="Add new pantry item"
       >

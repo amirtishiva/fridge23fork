@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import React from "react";
 import SplashScreen from "./components/layout/SplashScreen";
 import BottomNav from "./components/layout/BottomNav";
+import { ScanSessionProvider } from "./hooks/useScanSession";
 
 import Onboarding from "./pages/auth/Onboarding";
 import Home from "./pages/core/Home";
@@ -19,7 +20,6 @@ import RecipeSaved from "./pages/recipes/RecipeSaved";
 import MyCollection from "./pages/recipes/MyCollection";
 import CookedHistory from "./pages/recipes/CookedHistory";
 import MyPantry from "./pages/pantry/MyPantry";
-import PantryScan from "./pages/pantry/PantryScan";
 import ShoppingList from "./pages/shopping/ShoppingList";
 import StoreMode from "./pages/shopping/StoreMode";
 import InventoryUpdated from "./pages/pantry/InventoryUpdated";
@@ -41,10 +41,10 @@ const queryClient = new QueryClient();
 
 const AppContent = () => {
   const location = useLocation();
+  // Don't show bottom nav on scan or review pages to avoid overlapping buttons
   const showBottomNav = [
     "/home",
     "/my-pantry",
-    "/scan",
     "/my-collection",
     "/profile",
     "/cooked-history",
@@ -71,7 +71,6 @@ const AppContent = () => {
         <Route path="/my-collection" element={<MyCollection />} />
         <Route path="/cooked-history" element={<CookedHistory />} />
         <Route path="/my-pantry" element={<MyPantry />} />
-        <Route path="/pantry-scan" element={<PantryScan />} />
         <Route path="/shopping-list" element={<ShoppingList />} />
         <Route path="/store-mode" element={<StoreMode />} />
         <Route path="/inventory-updated" element={<InventoryUpdated />} />
@@ -104,11 +103,13 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <AppContent />
-        </BrowserRouter>
+        <ScanSessionProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+            <AppContent />
+          </BrowserRouter>
+        </ScanSessionProvider>
       </TooltipProvider>
     </QueryClientProvider>
   );

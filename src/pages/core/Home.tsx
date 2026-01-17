@@ -3,11 +3,13 @@ import { useNavigate } from "react-router-dom";
 import { Camera, Flame, Leaf, TrendingUp, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { StatCardSkeleton } from "@/components/ui/skeleton";
+import { useUser } from "@/hooks/useUser";
 
 
 const Home = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
+  const { user } = useUser();
 
   // Simulate data loading
   useEffect(() => {
@@ -80,19 +82,19 @@ const Home = () => {
               <h3 className="text-card-title text-foreground">Your Streak</h3>
               <div className="flex items-center gap-1 text-secondary">
                 <Flame className="w-5 h-5" />
-                <span className="text-card-title">7 Days</span>
+                <span className="text-card-title">{user.stats.streak} Days</span>
               </div>
             </div>
             <div className="flex gap-2">
               {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((day, index) => (
                 <div
                   key={index}
-                  className={`flex-1 h-10 rounded-lg flex items-center justify-center text-caption ${index < 7
+                  className={`flex-1 h-10 rounded-lg flex items-center justify-center text-caption ${index < user.stats.streak
                     ? 'bg-primary/10 text-primary'
                     : 'bg-muted text-muted-foreground'
                     }`}
                 >
-                  <Flame className={`w-4 h-4 ${index < 7 ? 'text-secondary' : 'text-muted-foreground'}`} />
+                  <Flame className={`w-4 h-4 ${index < user.stats.streak ? 'text-secondary' : 'text-muted-foreground'}`} />
                 </div>
               ))}
             </div>
@@ -118,8 +120,8 @@ const Home = () => {
                   <Leaf className="w-5 h-5 text-primary" />
                   <span className="text-caption text-muted-foreground">Food Saved</span>
                 </div>
-                <p className="text-section-title text-foreground">2.4 kg</p>
-                <p className="text-caption text-primary">This week</p>
+                <p className="text-section-title text-foreground">{user.stats.foodRescued.toFixed(1)} kg</p>
+                <p className="text-caption text-primary">Total saved</p>
               </button>
               <button
                 onClick={() => navigate('/eco-hero-library')}
@@ -129,8 +131,8 @@ const Home = () => {
                   <TrendingUp className="w-5 h-5 text-primary" />
                   <span className="text-caption text-muted-foreground">Money Saved</span>
                 </div>
-                <p className="text-section-title text-foreground">$32</p>
-                <p className="text-caption text-primary">This week</p>
+                <p className="text-section-title text-foreground">${user.stats.moneySaved.toFixed(0)}</p>
+                <p className="text-caption text-primary">Total saved</p>
               </button>
             </>
           )}

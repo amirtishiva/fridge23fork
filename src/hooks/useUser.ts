@@ -91,7 +91,7 @@ export const useUser = () => {
     }, []);
 
     // Use this when a user completes a recipe (e.g., from ReviewIngredients)
-    const addImpact = useCallback((impact: { money: number; co2: number; foodWeight: number; recipeName?: string; recipeId?: string }) => {
+    const addImpact = useCallback((impact: { money: number; co2: number; foodWeight: number; recipeName?: string; recipeId?: string; image?: string }) => {
         setUserData(prev => {
             const today = new Date().toISOString().split('T')[0];
             const lastActive = prev.stats.lastActiveDate;
@@ -122,7 +122,8 @@ export const useUser = () => {
                 id: impact.recipeId || Math.random().toString(36).substr(2, 9),
                 name: impact.recipeName || 'Unknown Recipe',
                 date: new Date().toISOString(),
-                xpEarned: earnedXp
+                xpEarned: earnedXp,
+                image: impact.image
             };
 
             return {

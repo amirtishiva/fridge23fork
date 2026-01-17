@@ -71,12 +71,23 @@ const CookingStep = () => {
   const [showVoiceAssistant, setShowVoiceAssistant] = useState(false);
 
   const handleVoiceCommand = (command: string) => {
-    setShowVoiceAssistant(false);
     if (command === "next") {
       handleNext();
+    } else if (command === "previous") {
+      handlePrevious();
     } else if (command === "timer") {
       setTimerRunning(true);
+    } else if (command === "stop") {
+      setTimerRunning(false);
+    } else if (command === "read") {
+      // Reading is handled by VoiceAssistant itself
+      return; // Don't close the assistant
+    } else if (command === "substitute") {
+      // Could scroll to substitution or show a modal
+      return;
     }
+    // Close assistant after handling command (except read/substitute)
+    setShowVoiceAssistant(false);
   };
 
   const currentStep = cookingSteps[currentStepIndex];
@@ -145,6 +156,7 @@ const CookingStep = () => {
         <VoiceAssistant
           onClose={() => setShowVoiceAssistant(false)}
           onCommand={handleVoiceCommand}
+          currentStepText={`Step ${currentStepIndex + 1}: ${currentStep.title} ${currentStep.highlight}. ${currentStep.description}${currentStep.tip ? ` Chef's tip: ${currentStep.tip}` : ''}`}
         />
       )}
       <div className="min-h-screen bg-background flex flex-col">

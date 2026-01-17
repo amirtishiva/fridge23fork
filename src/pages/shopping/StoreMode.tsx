@@ -1,13 +1,12 @@
 import { useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { X, Check, Mic, MicOff, Volume2, VolumeX, Scan, Wallet, AlertTriangle } from "lucide-react";
+import { X, Check, Mic, MicOff, Volume2, VolumeX, Wallet, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { useVoiceCommands } from "@/hooks/useVoiceCommands";
 import { useSpeechSynthesis } from "@/hooks/useSpeechSynthesis";
 import { useToast } from "@/hooks/use-toast";
 import { usePantry } from "@/hooks/usePantry";
-import BarcodeScanner from "@/components/pantry/BarcodeScanner";
 import { useShoppingList } from "@/hooks/useShoppingList";
 import PriceEditModal from "@/components/shopping/PriceEditModal";
 import BudgetLimitModal from "@/components/shopping/BudgetLimitModal";
@@ -85,7 +84,6 @@ const StoreMode = () => {
   const [isSpeakingList, setIsSpeakingList] = useState(false);
 
   // New feature states
-  const [showScanner, setShowScanner] = useState(false);
   const [showBudgetModal, setShowBudgetModal] = useState(false);
   const [budgetLimit, setBudgetLimit] = useState<number | null>(() => {
     const stored = localStorage.getItem(BUDGET_STORAGE_KEY);
@@ -235,22 +233,7 @@ const StoreMode = () => {
     );
   }, []);
 
-  const handleProductScanned = useCallback((product: { name: string; price: number }) => {
-    const item = findItemByName(product.name);
-    if (item) {
-      toggleItemById(item.id, true);
-      updateItemPrice(item.id, product.price);
-      setHighlightedItem(item.id);
 
-      toast({
-        title: `✓ ${item.name} scanned!`,
-        description: `Checked off and price updated to ${formatPrice(product.price)}`,
-      });
-
-      setTimeout(() => setHighlightedItem(null), 1500);
-    }
-    setShowScanner(false);
-  }, [findItemByName, toggleItemById, updateItemPrice, toast]);
 
   const handlePriceEdit = useCallback((itemId: string, name: string, currentPrice: number) => {
     setEditingPrice({ id: itemId, name, price: currentPrice });
@@ -415,15 +398,6 @@ const StoreMode = () => {
 
   return (
     <div className="h-screen w-full overflow-y-auto bg-background pb-40 hide-scrollbar">
-      {/* Barcode Scanner */}
-      {showScanner && (
-        <BarcodeScanner
-          onProductScanned={handleProductScanned}
-          onClose={() => setShowScanner(false)}
-          itemNames={allItems.map(i => i.name)}
-        />
-      )}
-
       {/* Budget Modal */}
       {showBudgetModal && (
         <BudgetLimitModal
@@ -668,14 +642,6 @@ const StoreMode = () => {
       {/* Bottom Actions */}
       <div className="fixed bottom-0 left-0 right-0 bg-background screen-padding pb-8 pt-4">
         <div className="flex gap-3">
-          {/* Barcode Scanner Button */}
-          <button
-            onClick={() => setShowScanner(true)}
-            className="w-14 h-14 rounded-xl bg-secondary text-secondary-foreground flex items-center justify-center hover:bg-secondary/90 transition-all"
-          >
-            <Scan className="w-6 h-6" />
-          </button>
-
           {/* Voice Toggle Button */}
           {sttSupported && (
             <button
